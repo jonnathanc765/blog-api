@@ -27,3 +27,6 @@ class AuthTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         assert response.data != None
+        assert isinstance(response.data, dict)
+        assert 'user' in response.data
+        assert 'token' in response.data

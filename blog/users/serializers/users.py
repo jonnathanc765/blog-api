@@ -14,21 +14,23 @@ class SignInSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=50)
     password = serializers.CharField(max_length=16)
 
+    def validate(self, attrs):
+        user = authenticate(
+            username=attrs['email'],
+            password=attrs['password'],
+        )
+        if not user:
+            raise serializers.ValidationError({'credentials': 'Email and password combination are not valid.'})
+
+        user = self.context['user'] = user
+
+        return attrs
+
 
     def save(self, **kwargs):
 
-        validated_data = {**self.validated_data, **kwargs}
-
         request = self.context['view'].request
-
-        user = authenticate(
-            request,
-            username=validated_data['email'],
-            password=validated_data['password'],
-        )
-
-        if user:
-            login(request, user)
-
+        user = self.context['user']
+        login(request, user)
         return user
 

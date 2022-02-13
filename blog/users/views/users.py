@@ -32,4 +32,9 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer.is_valid(True)
         serializer.save()
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = {
+            'user': serializer.data,
+            'token': ''
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
