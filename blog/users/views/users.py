@@ -18,10 +18,17 @@ User = get_user_model()
 
 class AuthViewSet(viewsets.GenericViewSet):
 
-    @action(mehtods=['POST'])
-    def login(self, request, *args, **kwargs) -> Response:
+    permission_classes = []
 
-        serializer = SignInSerializer(request.data)
+    @action(methods=['POST'], detail=False)
+    def login(self, request) -> Response:
+
+        serializer = SignInSerializer(
+            data=request.data,
+            context={
+                **self.get_serializer_context()
+            }
+        )
         serializer.is_valid(True)
         serializer.save()
 

@@ -21,8 +21,9 @@ class AuthTest(APITestCase):
         )
 
         response = self.client.post('/api/login/', {
-            'email': 'test@email.com'
+            'email': 'test@email.com',
+            'password': 'password' # Default password setted in factory
         })
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         assert response.data != None
