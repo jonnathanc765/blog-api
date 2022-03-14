@@ -22,7 +22,7 @@ User = get_user_model()
 
 class AuthViewSet(viewsets.GenericViewSet):
 
-    permission_classes = []
+    # permission_classes = []
     authentication_classes = []
 
     @action(methods=['POST'], detail=False)
@@ -49,6 +49,11 @@ class AuthViewSet(viewsets.GenericViewSet):
         logout(request)
         return Response(status=status.HTTP_200_OK)
 
-    @action(methods=['GET'], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[JWTAuthentication])
+    @action(
+        methods=['GET'],
+        detail=False,
+        permission_classes=[IsAuthenticated],
+        authentication_classes=[JWTAuthentication]
+    )
     def protected(self, request) -> Response:
         return Response('ok', status=status.HTTP_200_OK)

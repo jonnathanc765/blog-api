@@ -12,19 +12,33 @@ from blog.users.factories.users import UserFactory
 
 class AuthTest(APITestCase):
 
-    def setUp(self) -> None:
-        return super().setUp()
+    email = 'test@email.com'
+    password = 'password' # Default password setted in factory
+
+    def _login(self):
+
+        UserFactory.create(
+            email=self.email
+        )
+        response = self.client.post('/api/login/', {
+            'email': self.email,
+            'password': self.password
+        })
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Bearer %s' % response.data['access'])
+        assert response.status_code == status.HTTP_200_OK
+        return response.data
 
 
     def test_users_can_login_with_email_and_password(self):
 
         UserFactory.create(
-            email='test@email.com'
+            email=self.email
         )
 
         response = self.client.post('/api/login/', {
-            'email': 'test@email.com',
-            'password': 'password' # Default password setted in factory
+            'email': self.email,
+            'password': self.password
         })
 
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
@@ -50,22 +64,38 @@ class AuthTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
         assert 'credentials' in response.data
 
-    def test_users_can_logout(self):
-
-        UserFactory.create(
-            email='test@email.com',
-        )
-
-        response = self.client.post('/api/login/', {
-            'email': 'test@email.com',
-            'password': 'password' # Default password setted in factory
-        })
-
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
-
-        self.client.get('/api/logout/')
+    def test_guest_users_cannot_access_protected_page(self):
 
         response = self.client.get('/api/protected/')
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_users_can_use_access_token_to_access_to_protected_page(self):
+
+        self._login()
+
+        response2 = self.client.get('/api/protected/')
+
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+        assert response2.data
+
+
+    # def test_users_can_logout(self):
+
+    #     UserFactory.create(
+    #         email='test@email.com',
+    #     )
+
+    #     response = self.client.post('/api/login/', {
+    #         'email': 'test@email.com',
+    #         'password': 'password' # Default password setted in factory
+    #     })
+
+    #     self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
+
+    #     self.client.get('/api/logout/')
+
+    #     response2 = self.client.get('/api/protected/')
+
+    #     self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
 
