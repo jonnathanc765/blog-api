@@ -1,5 +1,5 @@
 # Django
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
 # Django REST Framework
@@ -12,6 +12,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+# Simple JWT
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 # Serializers
 from blog.users.serializers.users import SignInSerializer
@@ -22,7 +25,6 @@ User = get_user_model()
 
 class AuthViewSet(viewsets.GenericViewSet):
 
-    # permission_classes = []
     authentication_classes = []
 
     @action(methods=['POST'], detail=False)
@@ -43,11 +45,6 @@ class AuthViewSet(viewsets.GenericViewSet):
         }
 
         return Response(data, status=status.HTTP_200_OK)
-
-    @action(methods=['GET'], detail=False)
-    def logout(self, request) -> Response:
-        logout(request)
-        return Response(status=status.HTTP_200_OK)
 
     @action(
         methods=['GET'],

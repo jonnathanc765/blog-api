@@ -25,7 +25,8 @@ class AuthTest(APITestCase):
             'password': self.password
         })
         self.client.credentials(
-            HTTP_AUTHORIZATION='Bearer %s' % response.data['access'])
+            HTTP_AUTHORIZATION=f"Bearer {response.data['access']}"
+        )
         assert response.status_code == status.HTTP_200_OK
         return response.data
 
@@ -78,24 +79,4 @@ class AuthTest(APITestCase):
 
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
         assert response2.data
-
-
-    # def test_users_can_logout(self):
-
-    #     UserFactory.create(
-    #         email='test@email.com',
-    #     )
-
-    #     response = self.client.post('/api/login/', {
-    #         'email': 'test@email.com',
-    #         'password': 'password' # Default password setted in factory
-    #     })
-
-    #     self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
-
-    #     self.client.get('/api/logout/')
-
-    #     response2 = self.client.get('/api/protected/')
-
-    #     self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
 
