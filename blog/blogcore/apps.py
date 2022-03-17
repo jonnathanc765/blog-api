@@ -1,6 +1,7 @@
-from django.apps import AppConfig
 
+# Django
+from django.apps import AppConfig
 
 class BlogcoreConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'blogcore'
+    name = 'blog.blogcore'
