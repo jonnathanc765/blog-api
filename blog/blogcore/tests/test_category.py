@@ -1,5 +1,6 @@
 
 # Django
+from unicodedata import category
 from rest_framework.test import APITestCase
 
 # Django REST Framework
@@ -74,8 +75,61 @@ class CategoryTest(APITestCase):
             'parent': parent.id
         })
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+    def test_users_can_delete_categories(self):
 
-        assert response.data['name'] == 'Category test'
-        assert response.data['description'] == 'Description test'
-        assert response.data['parent'] == parent.id
+        category = CategoryFactory.create()
+
+        response = self.client.delete(f'/api/blog/categories/{category.id}/')
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
+
+        assert Category.objects.count() == 0
+
+    def test_category_cannot_be_itself_parent(self):
+
+        category = CategoryFactory.create()
+
+        response = self.client.put(f'/api/blog/categories/{category.id}/', {
+            'name': 'Category test',
+            'description': 'Description test',
+            'parent': category.id
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+
+        assert response.data['parent']
+
+    def test_child_category_parent_field_is_setted_on_null_when_parent_is_deleted(self):
+
+        parent = CategoryFactory.create()
+        category = CategoryFactory.create(
+            parent=parent
+        )
+
+        self.client.delete(f'/api/blog/categories/{parent.id}/')
+
+        category.refresh_from_db()
+
+        assert category.parent == None
+
+    def test_name_is_required_when_category_will_be_created(self):
+
+        response = self.client.post('/api/blog/categories/', {
+            'description': 'Description test',
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+
+        assert response.data['name']
+
+    def test_parent_categories_must_exists_when_create_a_category(self):
+
+        response = self.client.post('/api/blog/categories/', {
+            'name': 'Category test',
+            'description': 'Description test',
+            'parent': '-1' # This key never going to exists
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+
+        assert response.data['parent']
