@@ -1,10 +1,10 @@
 
-# Django
-from unicodedata import category
-from rest_framework.test import APITestCase
 
 # Django REST Framework
 from rest_framework import status
+
+# TestCase
+from blog.utils.api_test_cases import CustomAPITestCase
 
 # Factories
 from ..factories import CategoryFactory
@@ -13,9 +13,11 @@ from ..factories import CategoryFactory
 from ..models import Category
 
 
-class CategoryTest(APITestCase):
+class CategoryTest(CustomAPITestCase):
 
     def test_users_can_create_categories(self):
+
+        self._login()
 
         response = self.client.post('/api/blog/categories/', {
             'name': 'Category test',
@@ -27,7 +29,18 @@ class CategoryTest(APITestCase):
         assert Category.objects.first().name == 'Category test'
         assert Category.objects.first().description == 'Description test'
 
+    def test_just_logged_in_users_can_create_categories(self):
+
+        response = self.client.post('/api/blog/categories/', {
+            'name': 'Category test',
+            'description': 'Description test'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, response.data)
+
     def tests_users_can_create_category_with_parent(self):
+
+        self._login()
 
         parent = CategoryFactory.create()
 
@@ -66,6 +79,8 @@ class CategoryTest(APITestCase):
 
     def test_users_can_update_categories(self):
 
+        self._login()
+
         category = CategoryFactory.create()
         parent = CategoryFactory.create()
 
@@ -77,6 +92,8 @@ class CategoryTest(APITestCase):
 
     def test_users_can_delete_categories(self):
 
+        self._login()
+
         category = CategoryFactory.create()
 
         response = self.client.delete(f'/api/blog/categories/{category.id}/')
@@ -86,6 +103,8 @@ class CategoryTest(APITestCase):
         assert Category.objects.count() == 0
 
     def test_category_cannot_be_itself_parent(self):
+
+        self._login()
 
         category = CategoryFactory.create()
 
@@ -101,6 +120,8 @@ class CategoryTest(APITestCase):
 
     def test_child_category_parent_field_is_setted_on_null_when_parent_is_deleted(self):
 
+        self._login()
+
         parent = CategoryFactory.create()
         category = CategoryFactory.create(
             parent=parent
@@ -114,6 +135,8 @@ class CategoryTest(APITestCase):
 
     def test_name_is_required_when_category_will_be_created(self):
 
+        self._login()
+
         response = self.client.post('/api/blog/categories/', {
             'description': 'Description test',
         })
@@ -123,6 +146,8 @@ class CategoryTest(APITestCase):
         assert response.data['name']
 
     def test_parent_categories_must_exists_when_create_a_category(self):
+
+        self._login()
 
         response = self.client.post('/api/blog/categories/', {
             'name': 'Category test',

@@ -9,12 +9,8 @@ from rest_framework.decorators import action
 from rest_framework import status
 
 # Permissions
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
-# Simple JWT
-from rest_framework_simplejwt.tokens import RefreshToken
-
 
 # Serializers
 from blog.users.serializers.users import SignInSerializer
@@ -26,6 +22,7 @@ User = get_user_model()
 class AuthViewSet(viewsets.GenericViewSet):
 
     authentication_classes = []
+    permission_classes = [AllowAny]
 
     @action(methods=['POST'], detail=False)
     def login(self, request) -> Response:
