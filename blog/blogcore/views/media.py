@@ -29,9 +29,9 @@ class MediaModelViewset(
             context={
                 **self.get_serializer_context()
             },
-            files=request.FILES['content']
+            data=request.FILES
         )
         serializer.is_valid(True)
         serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_201_CREATED)
 
