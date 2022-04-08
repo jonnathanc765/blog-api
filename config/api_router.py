@@ -16,6 +16,6 @@ urlpatterns = router.urls
 urlpatterns += [
     # User management
     path("", include("blog.users.urls", namespace="users")),
-    path("blog/", include("blog.blogcore.urls", namespace="users")),
+    path("blog/", include("blog.blogcore.urls", namespace="blog")),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ]

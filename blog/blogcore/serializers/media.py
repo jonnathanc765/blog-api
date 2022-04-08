@@ -1,4 +1,8 @@
 
+# Utils
+import uuid
+import os.path
+
 # Models
 from ..models import Media as MediaModel, AVAILABLE_EXTENSIONS
 
@@ -25,7 +29,28 @@ class MediaModelSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        media = MediaModel.objects.create(
-            content=validated_data['content']
-        )
+        media = MediaModel(content=validated_data['content'])
+        final_name = generate_uuid4_filename(media.content.name)
+        media.content.name = final_name
+        media.save()
+        print(final_name)
         return media
+
+
+
+
+
+
+
+def generate_uuid4_filename(filename):
+    """
+    Generates a uuid4 (random) filename, keeping file extension
+
+    :param filename: Filename passed in. In the general case, this will
+                     be provided by django-ckeditor's uploader.
+    :return: Randomized filename in urn format.
+    :rtype: str
+    """
+    discard, ext = os.path.splitext(filename)
+    basename = f"{discard}-{uuid.uuid4().urn}"
+    return f"{''.join(basename)}{ext}"

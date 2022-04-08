@@ -24,7 +24,7 @@ class AuthViewSet(viewsets.GenericViewSet):
     authentication_classes = []
     permission_classes = [AllowAny]
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST', 'PUT'], detail=False)
     def login(self, request) -> Response:
 
         serializer = SignInSerializer(
