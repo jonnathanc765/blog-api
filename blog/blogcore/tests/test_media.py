@@ -1,5 +1,6 @@
 
 # Utils
+from blog.blogcore.factories.media import MediaFactory
 from blog.utils.api_test_cases import CustomAPITestCase
 
 # Django
@@ -10,7 +11,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 
 # Models
-from blog.blogcore.models import Media, AVAILABLE_EXTENSIONS
+from blog.blogcore.models import Media, AVAILABLE_EXTENSIONS, MAX_FILE_WEIGHT
 
 class MediaTest(CustomAPITestCase):
 
@@ -56,3 +57,34 @@ class MediaTest(CustomAPITestCase):
             assert 'content'  in response.data
 
         assert Media.objects.count() == 0
+
+    def test_users_can_list_media_upload_files(self):
+
+        self._login()
+
+        MediaFactory.create_batch(10)
+
+        response = self.client.get('/api/blog/media/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert len(response.data) == 10
+
+    def test_users_cannot_upload_lourded_images(self):
+
+        self._login()
+
+        with open('blog/blogcore/tests/lourde_image_test.jpeg', 'rb') as img:
+            in_memory = SimpleUploadedFile("file.jpeg", img.read(), content_type="image/jpeg")
+            response = self.client.post(
+                '/api/blog/media/',
+                encode_multipart(
+                    BOUNDARY,
+                    {
+                        'content': in_memory
+                    }
+                ),
+                content_type=MULTIPART_CONTENT
+            )
+            self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+            assert 'content' in response.data
+            assert "File weight" in str(response.data['content'][0])
