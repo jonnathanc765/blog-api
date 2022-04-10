@@ -39,11 +39,6 @@ class MediaModelSerializer(serializers.ModelSerializer):
         return media
 
 
-
-
-
-
-
 def generate_uuid4_filename(filename):
     """
     Generates a uuid4 (random) filename, keeping file extension
@@ -54,5 +49,5 @@ def generate_uuid4_filename(filename):
     :rtype: str
     """
     discard, ext = os.path.splitext(filename)
-    basename = f"{discard}-{uuid.uuid4().urn}"
+    basename = f"{discard}-{str(uuid.uuid4())}"
     return f"{''.join(basename)}{ext}"

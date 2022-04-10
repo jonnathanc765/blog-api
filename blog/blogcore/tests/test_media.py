@@ -42,19 +42,18 @@ class MediaTest(CustomAPITestCase):
 
         self._login()
 
-        for extension in ['bmp']:
-            response = self.client.post(
-                '/api/blog/media/',
-                encode_multipart(
-                    BOUNDARY,
-                    {
-                        'content': SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
-                    }
-                ),
-                content_type=MULTIPART_CONTENT
-            )
-            self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-            assert 'content'  in response.data
+        response = self.client.post(
+            '/api/blog/media/',
+            encode_multipart(
+                BOUNDARY,
+                {
+                    'content': SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
+                }
+            ),
+            content_type=MULTIPART_CONTENT
+        )
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        assert 'content'  in response.data
 
         assert Media.objects.count() == 0
 
