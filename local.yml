@@ -26,7 +26,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: blog_production_postgres
+    image: blog_local_postgres
     container_name: blog_local_postgres
     volumes:
       - blog_local_postgres_data:/var/lib/postgresql/data:Z

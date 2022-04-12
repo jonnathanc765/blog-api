@@ -76,7 +76,8 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
-    "rest_framework_simplejwt"
+    "rest_framework_simplejwt",
+    "modeltranslation"
 ]
 
 LOCAL_APPS = [
@@ -309,3 +310,12 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+
+# Language
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('es', gettext('Spanish')),
+    ('en', gettext('English')),
+)
