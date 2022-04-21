@@ -1,15 +1,15 @@
+
 # Utils
 from typing import Any
 
 # Django REST Framework
 from rest_framework import serializers
 
+# Models
 from ..models import Category
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
-
-    slug = serializers.CharField(required=False)
 
     class Meta:
 

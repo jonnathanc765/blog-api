@@ -11,7 +11,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 
 # Models
-from blog.blogcore.models import Media, AVAILABLE_EXTENSIONS, MAX_FILE_WEIGHT
+from blog.blogcore.models import Media, AVAILABLE_EXTENSIONS
 
 class MediaTest(CustomAPITestCase):
 

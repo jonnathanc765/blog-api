@@ -67,8 +67,6 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    "crispy_forms",
-    "crispy_bootstrap5",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -77,7 +75,6 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "drf_spectacular",
     "rest_framework_simplejwt",
-    "modeltranslation"
 ]
 
 LOCAL_APPS = [
@@ -310,12 +307,3 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
-
-
-# Language
-
-gettext = lambda s: s
-LANGUAGES = (
-    ('es', gettext('Spanish')),
-    ('en', gettext('English')),
-)
