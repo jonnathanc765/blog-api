@@ -13,8 +13,13 @@ from ..serializers.post import PostModelSerializer
 
 class PostModelViewset(ModelViewSet):
 
-    queryset = Post.objects.filter(status='P')
     serializer_class = PostModelSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Post.objects.all()
+        return Post.objects.filter(status='P')
+
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'delete']:

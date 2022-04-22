@@ -6,6 +6,7 @@ from django.db import models
 # Models
 from .category import Category
 from .tag import Tag
+from .media import Media
 
 
 STATUS_CHOICES = [
@@ -25,8 +26,9 @@ class Post(models.Model):
         default=DEFAULT_STATUS_CHOICE
     )
 
-    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL, related_name='products')
     tag = models.ManyToManyField(Tag, verbose_name='tags')
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
+    thumbnail = models.ForeignKey(Media, null=True, blank=True, on_delete=models.SET_NULL, related_name='posts')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
