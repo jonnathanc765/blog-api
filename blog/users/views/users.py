@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # Serializers
-from blog.users.serializers.users import SignInSerializer
+from blog.users.serializers.users import SignInSerializer, UserModelSerializer
 
 
 User = get_user_model()
@@ -51,3 +51,14 @@ class AuthViewSet(viewsets.GenericViewSet):
     )
     def protected(self, request) -> Response:
         return Response('ok', status=status.HTTP_200_OK)
+
+    @action(
+        methods=['GET'],
+        detail=False,
+        permission_classes=[IsAuthenticated],
+        authentication_classes=[JWTAuthentication]
+    )
+    def user(self, request):
+        user = request.user
+        serializer = UserModelSerializer(user)
+        return Response(serializer.data, status.HTTP_200_OK)

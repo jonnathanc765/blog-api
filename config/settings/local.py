@@ -72,3 +72,6 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # ------------------------------------------------------------------------------
 DEFAULT_FILE_STORAGE = "blog.utils.storages.MediaRootS3Boto3Storage"
 MEDIA_URL = f"https://{aws_s3_domain}/media/"
+# CORS
+# ------------------------------------------------------------------------------
+CORS_ALLOW_ALL_ORIGINS = True

@@ -26,6 +26,7 @@ class PostTest(CustomAPITestCase):
         assert response.data[0]['body']
         assert response.data[0]['title']
         assert response.data[0]['created_at']
+        assert response.data[0]['deleted_at'] == None
 
     def test_users_can_list_just_published_post(self):
 

@@ -11,9 +11,6 @@ class CustomAPITestCase(APITestCase):
     email = 'test@email.com'
     password = 'password' # Default password setted in factory
 
-    def setUp(self) -> None:
-        return super().setUp()
-
     def _login(self):
 
         UserFactory.create(

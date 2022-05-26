@@ -1,5 +1,6 @@
 
 # Django
+import email
 from django.contrib.auth import login
 
 # Django REST Framwork
@@ -75,8 +76,19 @@ class AuthTest(APITestCase):
 
         self._login()
 
-        response2 = self.client.get('/api/protected/')
+        response = self.client.get('/api/protected/')
 
-        self.assertEqual(response2.status_code, status.HTTP_200_OK)
-        assert response2.data
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert response.data
+
+    def test_users_can_retrieve_their_own_information(self):
+
+        self._login()
+
+        response = self.client.get('/api/user/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        assert response.data
+        assert response.data['email'] == self.email
 

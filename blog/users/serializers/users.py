@@ -48,3 +48,9 @@ class SignInSerializer(serializers.Serializer):
             'refresh': str(refresh)
         }
 
+
+class UserModelSerializer(serializers.Serializer):
+
+    first_name = serializers.CharField(max_length=50)
+    last_name = serializers.CharField(max_length=50)
+    email = serializers.CharField(max_length=50)
