@@ -299,6 +299,7 @@ CORS_ALLOW_METHODS = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'https://musketerdev.herokuapp.com'
 ]
 
 # By Default swagger ui is available only to admin user. You can change permission classs to change that
