@@ -7,12 +7,17 @@ from rest_framework.permissions import AllowAny
 from ..models import Post
 
 # Serializers
-from ..serializers.post import PostModelSerializer
+from ..serializers.post import PostModelSerializer, ReadPostSerializer
 
 
 class PostModelViewset(ModelViewSet):
 
     serializer_class = PostModelSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return ReadPostSerializer
+        return super().get_serializer_class()
 
     def get_queryset(self):
         if self.request.user.is_authenticated:

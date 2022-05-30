@@ -1,5 +1,6 @@
 
 # Utils
+from blog.blogcore.factories.tag import TagFactory
 from blog.utils.api_test_cases import CustomAPITestCase
 
 # Factories
@@ -14,6 +15,8 @@ from blog.blogcore.models import Post
 
 class PostTest(CustomAPITestCase):
 
+    TAG_NAME = 'React.js'
+
     def test_users_can_list_post(self):
 
         PostFactory.create_batch(20)
@@ -27,6 +30,22 @@ class PostTest(CustomAPITestCase):
         assert response.data[0]['title']
         assert response.data[0]['created_at']
         assert response.data[0]['deleted_at'] == None
+
+    def test_tags_list_is_returned_on_list(self):
+
+        post = PostFactory.create()
+        post.tags.add(TagFactory.create(name=self.TAG_NAME))
+
+        response = self.client.get('/api/blog/posts/')
+
+        assert len(response.data) == 1
+
+        post = response.data[0]
+
+        assert len(post['tags']) == 1
+
+        for tag in post['tags']:
+            assert tag == self.TAG_NAME
 
     def test_users_can_list_just_published_post(self):
 
@@ -47,6 +66,20 @@ class PostTest(CustomAPITestCase):
         assert response.status_code == 200
         assert response.data['title'] == post.title
         assert response.data['body'] == post.body
+
+    def test_tags_list_is_returned_on_single(self):
+
+        post = PostFactory.create()
+        post.tags.add(TagFactory.create(name=self.TAG_NAME))
+
+        response = self.client.get(f'/api/blog/posts/{post.id}/')
+
+        post = response.data
+
+        assert len(post['tags']) == 1
+
+        for tag in post['tags']:
+            assert tag == self.TAG_NAME
 
     def test_users_can_retrieve_just_published_posts(self):
 

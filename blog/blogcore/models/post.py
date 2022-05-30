@@ -26,7 +26,7 @@ class Post(models.Model):
         default=DEFAULT_STATUS_CHOICE
     )
 
-    tag = models.ManyToManyField(Tag, verbose_name='tags', blank=True)
+    tags = models.ManyToManyField(Tag, verbose_name='tags', blank=True)
     category = models.ForeignKey(Category, null=True, blank= True, on_delete=models.SET_NULL, related_name='products')
     thumbnail = models.ForeignKey(Media, null=True, blank=True, on_delete=models.SET_NULL, related_name='posts')
 

@@ -12,3 +12,12 @@ class PostModelSerializer(serializers.ModelSerializer):
 
         fields = '__all__'
         model = Post
+
+
+class ReadPostSerializer(PostModelSerializer):
+
+    tags = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='name'
+    )
